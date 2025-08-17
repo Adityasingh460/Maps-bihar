@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bihar Maps - Explore the Heart of Eastern India</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        #map {
+            height: 70vh;
+            width: 100%;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .custom-popup .leaflet-popup-content-wrapper {
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(5px);
+        }
+        .district-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        .navigation-btn:hover {
+            background-color: #4f46e5 !important;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <header class="bg-indigo-700 text-white py-6 shadow-lg">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="flex items-center mb-4 md:mb-0">
+                    <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/aa7687d9-404e-4f7f-87d9-7c1080bd891f.png" alt="Bihar state emblem featuring the Bodhi tree with 50 leaves representing Buddha's enlightenment" class="mr-3 rounded-full" />
+                    <h1 class="text-2xl md:text-3xl font-bold">Bihar Maps Explorer</h1>
+                </div>
+                <nav class="flex space-x-4">
+                    <a href="#map-section" class="px-4 py-2 rounded-lg navigation-btn bg-indigo-600 transition duration-300">Interactive Map</a>
+                    <a href="#districts" class="px-4 py-2 rounded-lg navigation-btn bg-indigo-600 transition duration-300">Districts</a>
+                    <a href="#historical-sites" class="px-4 py-2 rounded-lg navigation-btn bg-indigo-600 transition duration-300">Heritage</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8">
+        <section class="mb-16">
+            <div class="text-center mb-10">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">Discover the Geographical Diversity of Bihar</h2>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto">Explore Bihar's 38 districts, tourist destinations, and geographical features through our comprehensive mapping platform.</p>
+            </div>
+
+            <div id="map-section" class="mb-16">
+                <h3 class="text-2xl font-semibold text-gray-700 mb-4">Interactive Bihar Map</h3>
+                <div id="map"></div>
+                <div class="mt-4 flex flex-wrap gap-2">
+                    <button onclick="showBaseMap()" class="px-4 py-2 bg-indigo-600 text-white rounded-md">Standard</button>
+                    <button onclick="showSatellite()" class="px-4 py-2 bg-indigo-600 text-white rounded-md">Satellite</button>
+                    <button onclick="showTerrain()" class="px-4 py-2 bg-indigo-600 text-white rounded-md">Terrain</button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-xl font-semibold mb-4 text-gray-800">Quick Facts</h3>
+                    <ul class="space-y-2 text-gray-700">
+                        <li><strong>Area:</strong> 94,163 km² (Ranked 12th in India)</li>
+                        <li><strong>Population:</strong> Over 120 million</li>
+                        <li><strong>Districts:</strong> 38 districts</li>
+                        <li><strong>Divisions:</strong> 9 administrative divisions</li>
+                        <li><strong>Major Rivers:</strong> Ganges, Sone, Gandak, Kosi</li>
+                    </ul>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-xl font-semibold mb-4 text-gray-800">Geographical Features</h3>
+                    <p class="text-gray-700">
+                        Bihar has three distinct regions: the Himalayan foothills in the north, the fertile Gangetic plain, and the Chota Nagpur plateau in the south. The state has a humid subtropical climate with hot summers and cool winters.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section id="districts" class="mb-16">
+            <h3 class="text-2xl font-semibold text-gray-700 mb-6">Explore Bihar's Districts</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Sample district cards - in a real app these would be generated from data -->
+                <div class="district-card bg-white rounded-lg shadow-md overflow-hidden transition duration-300">
+                    <div class="h-48 overflow-hidden">
+                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/e4b06b73-e37b-4599-923a-706b1a1e04f3.png" alt="Patna city skyline with historic buildings and modern developments along the Ganges river" class="w-full h-full object-cover" />
+                    </div>
+                    <div class="p-4">
+                        <h4 class="font-bold text-lg mb-2 text-gray-800">Patna</h4>
+                        <p class="text-gray-600 text-sm">The capital city with rich historical significance dating back to ancient Magadha.</p>
+                        <button onclick="flyToDistrict('Patna')" class="mt-3 text-indigo-600 hover:text-indigo-800 font-medium">View on Map</button>
+                    </div>
+                </div>
+                <div class="district-card bg-white rounded-lg shadow-md overflow-hidden transition duration-300">
+                    <div class="h-48 overflow-hidden">
+                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/42370fe7-5701-4246-b3d4-e5fab576e153.png" alt="Bodh Gaya Mahabodhi Temple complex with the sacred Bodhi tree and devotees" class="w-full h-full object-cover" />
+                    </div>
+                    <div class="p-4">
+                        <h4 class="font-bold text-lg mb-2 text-gray-800">Gaya</h4>
+                        <p class="text-gray-600 text-sm">Home to Bodh Gaya, the site where Buddha attained enlightenment.</p>
+                        <button onclick="flyToDistrict('Gaya')" class="mt-3 text-indigo-600 hover:text-indigo-800 font-medium">View on Map</button>
+                    </div>
+                </div>
+                <div class="district-card bg-white rounded-lg shadow-md overflow-hidden transition duration-300">
+                    <div class="h-48 overflow-hidden">
+                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/206c4d03-3a80-416a-975a-6439e02bde5e.png" alt="Nalanda University ruins showing ancient classrooms and meditation halls" class="w-full h-full object-cover" />
+                    </div>
+                    <div class="p-4">
+                        <h4 class="font-bold text-lg mb-2 text-gray-800">Nalanda</h4>
+                        <p class="text-gray-600 text-sm">Site of the ancient Nalanda University, a center of Buddhist learning.</p>
+                        <button onclick="flyToDistrict('Nalanda')" class="mt-3 text-indigo-600 hover:text-indigo-800 font-medium">View on Map</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="historical-sites" class="mb-16">
+            <h3 class="text-2xl font-semibold text-gray-700 mb-6">Historical & Cultural Landmarks</h3>
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                        <h4 class="text-xl font-semibold mb-4 text-gray-800">UNESCO World Heritage Sites</h4>
+                        <ul class="space-y-3 text-gray-700">
+                            <li><strong>Mahabodhi Temple</strong> - The place where Buddha attained enlightenment</li>
+                            <li><strong>Nalanda Mahavihara</strong> - Ruins of the ancient university complex</li>
+                            <li><strong>Vikramashila Mahavihara</strong> - Important ancient Buddhist university</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="text-xl font-semibold mb-4 text-gray-800">Other Important Sites</h4>
+                        <ul class="space-y-3 text-gray-700">
+                            <li><strong>Patna Museum</strong> - Houses artifacts from the Mauryan and Gupta periods</li>
+                            <li><strong>Barabar Caves</strong> - The oldest surviving rock-cut caves in India</li>
+                            <li><strong>Sasaram</strong> - Tomb of Sher Shah Suri, an architectural masterpiece</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-indigo-50 rounded-lg p-8">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Bihar Tourism Resources</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white p-4 rounded-lg shadow-sm">
+                    <h4 class="font-semibold mb-2 text-gray-700">Official Tourism Sites</h4>
+                    <ul class="space-y-2 text-indigo-600">
+                        <li><a href="https://bihar.gov.in" class="hover:underline">Bihar Government</a></li>
+                        <li><a href="https://tourism.bihar.gov.in" class="hover:underline">Bihar Tourism</a></li>
+                    </ul>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow-sm">
+                    <h4 class="font-semibold mb-2 text-gray-700">Transportation</h4>
+                    <ul class="space-y-2 text-indigo-600">
+                        <li><a href="https://www.indianrailways.gov.in" class="hover:underline">Indian Railways</a></li>
+                        <li><a href="https://www.bihartransport.gov.in" class="hover:underline">Bihar Transport</a></li>
+                    </ul>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow-sm">
+                    <h4 class="font-semibold mb-2 text-gray-700">Other Resources</h4>
+                    <ul class="space-y-2 text-indigo-600">
+                        <li><a href="https://censusindia.gov.in" class="hover:underline">Census Data</a></li>
+                        <li><a href="https://bhuvan.nrsc.gov.in" class="hover:underline">Satellite Maps</a></li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-gray-800 text-white py-8">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between">
+                <div class="mb-6 md:mb-0">
+                    <h4 class="text-lg font-semibold mb-3">Bihar Maps Explorer</h4>
+                    <p class="text-gray-400 text-sm">An interactive mapping platform for Bihar, India.</p>
+                </div>
+                <div class="grid grid-cols-2 gap-8">
+                    <div>
+                        <h5 class="font-semibold mb-3">Links</h5>
+                        <ul class="space-y-2 text-gray-400 text-sm">
+                            <li><a href="#" class="hover:text-white">Home</a></li>
+                            <li><a href="#" class="hover:text-white">About</a></li>
+                            <li><a href="#" class="hover:text-white">Contact</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h5 class="font-semibold mb-3">Legal</h5>
+                        <ul class="space-y-2 text-gray-400 text-sm">
+                            <li><a href="#" class="hover:text-white">Privacy Policy</a></li>
+                            <li><a href="#" class="hover:text-white">Terms of Use</a></li>
+                            <li><a href="#" class="hover:text-white">Disclaimer</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-6 pt-6 text-center text-gray-400 text-sm">
+                <p>© 2023 Bihar Maps Explorer. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize the map
+        const map = L.map('map').setView([25.6, 85.1], 7);
+
+        // Base map layers
+        const baseMap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        });
+
+        const satelliteMap = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+            attribution: 'Tiles © Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+        });
+
+        const terrainMap = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+            attribution: 'Map data: © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: © <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
+        });
+
+        // Add default base layer
+        baseMap.addTo(map);
+
+        // District boundary coordinates (simplified for demo)
+        const districts = {
+            'Patna': { lat: 25.6, lng: 85.1, zoom: 11 },
+            'Gaya': { lat: 24.8, lng: 85.0, zoom: 12 },
+            'Nalanda': { lat: 25.1, lng: 85.5, zoom: 12 },
+            'Muzaffarpur': { lat: 26.1, lng: 85.4, zoom: 11 },
+            'Bhagalpur': { lat: 25.3, lng: 86.0, zoom: 12 },
+            'Darbhanga': { lat: 26.2, lng: 85.9, zoom: 12 }
+        };
+
+        // Add markers for major cities/tourist spots
+        const places = [
+            { name: 'Patna', lat: 25.6, lng: 85.1, type: 'capital' },
+            { name: 'Bodh Gaya', lat: 24.7, lng: 85.0, type: 'religious' },
+            { name: 'Nalanda University', lat: 25.1, lng: 85.4, type: 'historical' },
+            { name: 'Vaishali', lat: 25.9, lng: 85.1, type: 'historical' },
+            { name: 'Rajgir', lat: 25.0, lng: 85.4, type: 'historical' },
+            { name: 'Gaya Junction', lat: 24.8, lng: 85.0, type: 'transport' }
+        ];
+
+        // Custom icons
+        const capitalIcon = L.icon({
+            iconUrl: 'https://cdn.jsdelivr.net/npm/leaflet-color-markers@1.0.0/img/marker-icon-red.png',
+            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41]
+        });
+
+        const religiousIcon = L.icon({
+            iconUrl: 'https://cdn.jsdelivr.net/npm/leaflet-color-markers@1.0.0/img/marker-icon-violet.png',
+            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41]
+        });
+
+        const historicalIcon = L.icon({
+            iconUrl: 'https://cdn.jsdelivr.net/npm/leaflet-color-markers@1.0.0/img/marker-icon-gold.png',
+            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41]
+        });
+
+        const transportIcon = L.icon({
+            iconUrl: 'https://cdn.jsdelivr.net/npm/leaflet-color-markers@1.0.0/img/marker-icon-blue.png',
+            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41]
+        });
+
+        // Add markers to map
+        places.forEach(place => {
+            let icon;
+            switch (place.type) {
+                case 'capital':
+                    icon = capitalIcon;
+                    break;
+                case 'religious':
+                    icon = religiousIcon;
+                    break;
+                case 'historical':
+                    icon = historicalIcon;
+                    break;
+                case 'transport':
+                    icon = transportIcon;
+                    break;
+                default:
+                    icon = L.Icon.Default;
+            }
+
+            const marker = L.marker([place.lat, place.lng], { icon }).addTo(map);
+            marker.bindPopup(`<div class="custom-popup"><b>${place.name}</b><br>Type: ${place.type}</div>`);
+        });
+
+        // Layer control
+        const baseMaps = {
+            "Standard": baseMap,
+            "Satellite": satelliteMap,
+            "Terrain": terrainMap
+        };
+
+        L.control.layers(baseMaps).addTo(map);
+
+        // Map control functions
+        function showBaseMap() {
+            map.removeLayer(map._layers[Object.keys(map._layers)[0]]);
+            baseMap.addTo(map);
+        }
+
+        function showSatellite() {
+            map.removeLayer(map._layers[Object.keys(map._layers)[0]]);
+            satelliteMap.addTo(map);
+        }
+
+        function showTerrain() {
+            map.removeLayer(map._layers[Object.keys(map._layers)[0]]);
+            terrainMap.addTo(map);
+        }
+
+        function flyToDistrict(districtName) {
+            const district = districts[districtName];
+            if (district) {
+                map.flyTo([district.lat, district.lng], district.zoom, {
+                    duration: 1.5,
+                    easeLinearity: 0.3
+                });
+            }
+        }
+    </script>
+</body>
+</html>
+
